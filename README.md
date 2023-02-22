@@ -1,27 +1,35 @@
-TP4: Sistema de archivos e intérprete de comandos
-=================================================
-
-caché de bloques
-----------------
-
-#### Se recomienda leer la función diskaddr() en el archivo fs/bc.c. Responder:
-
-**¿Qué es super->s_nblocks?**
-
-La variable `super` hace referencia al superbloque del file system.
-El superbloque contiene la información de todo el file system. En particular, `s_nblocks` contiene la cantidad de bloques que tiene el file system.
+### Introducción
+El repositorio contiene una version del sistema operativo JOS basado en el materia sistemas operativos del MIT
 
 
-**¿Dónde y cómo se configura este bloque especial?**
-
-Se configura en la función `void opendisk(const char *name)` del archivo `fsformat.c`
-
-Extrayendo el código de la función se puede ver como se configura el superbloque
-
+### Instalación de software necesario:
 ```
-super = alloc(BLKSIZE);              //Alloca el superbloque
-super->s_magic = FS_MAGIC;          //Setea el número mágico
-super->s_nblocks = nblocks;        //Setea el total de bloques
-super->s_root.f_type = FTYPE_DIR;  //Setea como directorio al nodos raiz
-strcpy(super->s_root.f_name, "/"); //Setea el nombre de la raiz
+sudo apt install make git gdb seabios clang clang-format libbsd-dev \
+     gcc-multilib libc6-dev linux-libc-dev qemu-system-x86
+```
+### Compilación y ejecución
+La compilación se realiza mediante make. En el directorio obj/kern se puede encontrar:
+
+* kernel — el binario ELF con el kernel
+* kernel.asm — assembler asociado al binario
+
+Para correr JOS, se puede usar `make qemu` o make `qemu-nox`.
+
+### Debugeo
+El Makefile de JOS incluye dos reglas para correr QEMU junto con GDB. En dos terminales distintas:
+```
+$ make qemu-gdb
+***
+*** Now run 'make gdb'.
+***
+qemu-system-i386 ...
+```
+y:
+```
+$ make gdb
+gdb -q -ex 'target remote ...' -n -x .gdbinit
+Reading symbols from obj/kern/kernel...done.
+Remote debugging using 127.0.0.1:...
+0x0000fff0 in ?? ()
+(gdb)
 ```
